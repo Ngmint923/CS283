@@ -172,6 +172,7 @@ int search_replace(char *buff, int str_len, char *find, char *replace) {
     char *src = buff, *match = NULL;
     int find_len = 0, replace_len = 0, i;
 
+    // Calculate lengths of `find` and `replace`
     while (find[find_len]) find_len++;
     while (replace[replace_len]) replace_len++;
 
@@ -240,6 +241,9 @@ int main(int argc, char *argv[]) {
     char opt;
     int rc, user_str_len;
 
+    //TODO:  #1. WHY IS THIS SAFE, aka what if arv[1] does not exist?
+    // this will lead the program to exit if theres no argument which ensures arv[1] exists, and if it arv[1] does not start with "-" its invalid and also exit
+
     if ((argc < 2) || (*argv[1] != '-')) {
         usage(argv[0]);
         exit(1);
@@ -252,6 +256,9 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
+    //TODO:  #2 Document the purpose of the if statement below
+    //To verify the user input has at least an option (-sth) and a string -> if not will notify user and exit code 1
+
     if (argc < 3) {
         usage(argv[0]);
         exit(1);
@@ -259,7 +266,9 @@ int main(int argc, char *argv[]) {
 
     input_string = argv[2];
 
-    // #TODO: #3 Allocate space for the buffer using malloc
+    // #TODO: #3 Allocate space for the buffer using malloc and
+    //          handle error if malloc fails by exiting with a 
+    //          return code of 99
     buff = (char *)malloc(BUFFER_SZ);
     if (!buff) {
         fprintf(stderr, "Error: Memory allocation failed\n");
@@ -278,6 +287,9 @@ int main(int argc, char *argv[]) {
             rc = count_words(buff, BUFFER_SZ, user_str_len);
             printf("Word Count: %d\n", rc);
             break;
+
+        //TODO:  #5 Implement the other cases for 'r' and 'w' by extending
+        //       the case statement options
 
         case 'r':
             reverse_string(buff, user_str_len);
@@ -308,7 +320,18 @@ int main(int argc, char *argv[]) {
             exit(1);
     }
 
+    //TODO:  #6 Dont forget to free your buffer before exiting
     print_buff(buff, BUFFER_SZ);
     free_buffer(buff);
     exit(0);
 }
+
+//TODO:  #7  Notice all of the helper functions provided in the 
+//          starter take both the buffer as well as the length.  Why
+//          do you think providing both the pointer and the length
+//          is a good practice, after all we know from main() that 
+//          the buff variable will have exactly 50 bytes?
+//  
+// - if later working with different buffer sizes you dont have to change every single one
+// - "len" make sure the program does not get segmentation fault because its bounded by buffer
+// - functions dont have to use all 50 bytes of buffer
