@@ -81,3 +81,28 @@ EOF
     [[ "$output" == *"cmd loop returned 0"* ]]
     [ "$status" -eq 0 ]
 }
+
+@test "Touch should create a file" {
+    run ./dsh <<EOF
+touch testfile
+ls
+EOF
+    [[ "$output" == *"testfile"* ]]
+    rm testfile  
+}
+
+@test "rm should delete a file" {
+    touch testfile
+    run ./dsh <<EOF
+rm testfile
+ls
+EOF
+    [[ "$output" != *"testfile"* ]]
+}
+
+@test "sleep should delay execution (background process simulation)" {
+    run ./dsh <<EOF
+sleep 1
+EOF
+    [ "$status" -eq 0 ]
+}
