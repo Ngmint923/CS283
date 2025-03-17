@@ -1,0 +1,19 @@
+1. How does the remote client determine when a command's output is fully received from the server, and what techniques can be used to handle partial reads or ensure complete message transmission?
+
+The client keeps reading data using recv() until it detects the special end-of-stream marker, RDSH_EOF_CHAR (0x04). This ensures that even if the data comes in multiple parts (which can happen with TCP), the client knows when it has received the full response
+
+2. This week's lecture on TCP explains that it is a reliable stream protocol rather than a message-oriented one. Since TCP does not preserve message boundaries, how should a networked shell protocol define and detect the beginning and end of a command sent over a TCP connection? What challenges arise if this is not handled correctly?
+
+The protocol uses specific markers to define message boundaries. The client sends commands ending with a null byte (\0), and the server responds with data ending in RDSH_EOF_CHAR (0x04). Without these markers, the client might not know when a message is complete, leading to issues like waiting for data that’s already been fully received.
+
+3. Describe the general differences between stateful and stateless protocols.
+
+Stateful protocols (like TCP) keep track of information about the connection, like session state or the order of messages. Stateless protocols (like basic HTTP) treat each request independently and don’t remember anything about previous messages
+
+4. Our lecture this week stated that UDP is "unreliable". If that is the case, why would we ever use it?
+
+UDP is fast and has less overhead compared to TCP. It’s good for situations where speed is more important than guaranteed delivery, like live video streaming, online gaming, or DNS queries. Some data loss is acceptable in these cases
+
+5. What interface/abstraction is provided by the operating system to enable applications to use network communications?
+
+The OS provides the Sockets API, which allows applications to create and manage network connections. Through sockets, programs can send and receive data over TCP, UDP, or other network protocols.
